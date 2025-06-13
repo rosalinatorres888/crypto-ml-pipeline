@@ -1,5 +1,38 @@
-*.db
-*.pyc
+# Python
 __pycache__/
-*.html
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+
+# Data
+*.db
+*.csv
+*.json
+crypto_data.db
+
+# Models
+models/*.pkl
+*.h5
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Distribution
+dist/
+build/
+*.egg-info/
