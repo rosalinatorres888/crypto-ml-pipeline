@@ -37,9 +37,7 @@
 
 ## 🎯 About The Project
 
-<div align="center">
-  <img src="LinkedIn_post.png" alt="Crypto ML Dashboard" width="800">
-</div>
+![Dashboard Screenshot](LinkedIn_Post.png)
 
 This project demonstrates a complete data science pipeline from data extraction to machine learning predictions and visualization. Built as part of my journey into ML/AI engineering, it showcases:
 
