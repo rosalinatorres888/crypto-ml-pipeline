@@ -7,7 +7,7 @@ from sklearn.metrics import r2_score
 
 print("Running ML Analysis...")
 conn = sqlite3.connect("crypto_data.db")
-df = pd.read_sql_query("SELECT * FROM crypto_prices WHERE coin_id=\"bitcoin\" ORDER BY etl_timestamp", conn)
+df = pd.read_sql_query("SELECT * FROM crypto_prices WHERE coin_id='bitcoin' ORDER BY etl_timestamp", conn)
 
 if len(df) > 5:
     X = df[["current_price", "total_volume", "market_cap"]].values[:-1]
@@ -18,7 +18,7 @@ if len(df) > 5:
     predictions = model.predict(X_test)
     r2 = r2_score(y_test, predictions)
     print(f"Model R2 Score: {r2:.3f}")
-    print(f"Current Price: ${df[\"current_price\"].iloc[-1]:,.2f}")
+    print(f"Current Price: ${df['current_price'].iloc[-1]:,.2f}")
     next_price = model.predict(X[-1].reshape(1, -1))[0]
     print(f"Predicted Next Price: ${next_price:,.2f}")
 else:
