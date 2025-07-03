@@ -1,3 +1,5 @@
+<div align="center">
+
 # 🚀 Real-Time Crypto ML Trading Pipeline
 
 <div align="center">
@@ -10,9 +12,14 @@
 
 <h3>An intelligent, real-time cryptocurrency trading system using Random Forest ML and WebSocket streaming</h3>
 
-[Live Demo](#-live-demo) • [Features](#-key-features) • [Architecture](#-system-architecture) • [Getting Started](#-getting-started) • [Performance](#-performance-metrics) • [Roadmap](#-roadmap)
+<div align="center">
 
-<img src="https://user-images.githubusercontent.com/placeholder/dashboard-preview.gif" alt="Dashboard Preview" width="800px">
+## 🎮 Live Demo
+
+<a href="https://rosalinatorres888.github.io/crypto-ml-pipeline/">
+  <img src="images/trading_dash.png" alt="Click for Live Demo" width="600px">
+</a>
+
 
 </div>
 
