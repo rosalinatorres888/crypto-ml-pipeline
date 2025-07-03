@@ -16,9 +16,11 @@
 
 ## 🎮 Live Demo
 
-<a href="https://rosalinatorres888.github.io/crypto-ml-pipeline/">
-  <img src="images/trading_dash.png" alt="Click for Live Demo" width="600px">
-</a>
+<p align="center">
+  <a href="https://rosalinatorres888.github.io/crypto-ml-pipeline/">
+    <img src="https://img.shields.io/badge/LIVE%20DEMO-Click%20Here-brightgreen?style=for-the-badge&logo=github" alt="Live Demo">
+  </a>
+</p>
 
 
 </div>
