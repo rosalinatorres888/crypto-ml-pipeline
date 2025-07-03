@@ -29,14 +29,8 @@
 
 ## 🎯 Project Overview
 
-This project demonstrates a production-ready machine learning pipeline for cryptocurrency trading, combining **real-time data streaming**, **ensemble learning algorithms**, and **interactive visualization**. Built with scalability and performance in mind, it showcases modern data engineering and ML practices.
+This project demonstrates a production-ready machine learning pipeline for cryptocurrency trading, combining **real-time data streaming**, **ensemble learning algorithms**, and **interactive visualization**. Building with scalability and performance in mind, it showcases modern data engineering and ML practices.
 
-### 🌟 What Makes This Special
-
-- **Real-Time Predictions**: Sub-second latency from data ingestion to trading signal
-- **Explainable AI**: SHAP integration for transparent decision-making
-- **Production Architecture**: Dockerized, scalable, and cloud-ready
-- **Live Dashboard**: Beautiful, responsive UI for monitoring and control
 
 ## 💼 Skills Demonstrated
 
@@ -109,7 +103,7 @@ self.model = RandomForestClassifier(
 - **Performance metrics** tracking
 - **Trade execution simulation**
 
-## 🏗️ System Architecture
+## 🏗️ System Architecture (in progress...)
 
 ```mermaid
 graph LR
@@ -154,26 +148,6 @@ cp .env.example .env
 python main.py
 ```
 
-### Docker Deployment
-
-```bash
-# Build and run with Docker
-docker build -t crypto-ml-pipeline .
-docker run -p 8000:8000 crypto-ml-pipeline
-```
-
-## 📈 Performance Metrics
-
-<div align="center">
-
-| Metric | Value | Description |
-|--------|-------|-------------|
-| **Model Accuracy** | 87.3% | Random Forest prediction accuracy |
-| **Latency** | <100ms | From data receipt to prediction |
-| **Throughput** | 1000+ tps | Transactions processed per second |
-| **Uptime** | 99.9% | System reliability |
-
-</div>
 
 ## 🧪 Testing & Validation
 
@@ -188,12 +162,6 @@ python backtest.py --start-date 2024-01-01 --end-date 2024-12-31
 python -m cProfile -s cumulative main.py
 ```
 
-## 📊 Results & Impact
-
-- **Backtested Returns**: +42.7% (2024 YTD)
-- **Sharpe Ratio**: 2.3
-- **Max Drawdown**: -12.4%
-- **Win Rate**: 64.2%
 
 ## 🛠️ Technical Stack
 
@@ -208,35 +176,6 @@ python -m cProfile -s cumulative main.py
 
 </div>
 
-## 🌐 API Documentation
-
-### Prediction Endpoint
-```http
-POST /api/predict
-Content-Type: application/json
-
-{
-  "symbol": "BTC/USDT",
-  "features": {
-    "price": 50000,
-    "volume": 1234567890,
-    "rsi": 52.3
-  }
-}
-```
-
-### Response
-```json
-{
-  "prediction": "BUY",
-  "confidence": 0.87,
-  "explanation": {
-    "price_impact": 0.35,
-    "volume_impact": 0.25,
-    "rsi_impact": 0.27
-  }
-}
-```
 
 
 ## 🗺️ Roadmap
@@ -245,7 +184,6 @@ Content-Type: application/json
 - [x] WebSocket integration
 - [x] Random Forest implementation
 - [x] Basic dashboard
-- [x] Docker deployment
 
 ### Phase 2 (In Progress) 🚧
 - [ ] LSTM time series prediction
@@ -259,16 +197,6 @@ Content-Type: application/json
 - [ ] GraphQL API
 - [ ] Blockchain integration
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📚 Documentation
 
 - [Full Documentation](docs/README.md)
@@ -276,11 +204,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 - [Architecture Decisions](docs/architecture.md)
 - [ML Model Details](docs/ml-models.md)
 
-## 🏆 Achievements
 
-- **HackMIT 2024**: Best FinTech Project
-- **Google Cloud Ready**: Deployed on GCP
-- **Open Source**: 50+ GitHub stars
 
 ## 📬 Contact
 
@@ -297,9 +221,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Thanks to the open-source community
-- Inspired by quantitative trading research
-- Built with passion for democratizing financial ML
-
+  
 ---
 
 <div align="center">
