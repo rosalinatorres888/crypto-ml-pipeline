@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto ML Trading Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            overflow-x: hidden;
+        }
+        
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(248, 113, 113, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-20px, -20px) scale(1.05); }
+            66% { transform: translate(20px, -10px) scale(0.95); }
+        }
+        
+        .header {
+            background: rgba(22, 27, 34, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 148, 158, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #22d3ee, #9333ea, #f87171);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #8b949e;
+        }
+        
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+        
+        .pulse {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #3fb950;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(63, 185, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(63, 185, 80, 0); }
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(139, 148, 158, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: rgba(88, 166, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #f0f6fc;
+        }
+        
+        .price-display {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .price-up {
+            color: #3fb950;
+        }
+        
+        .price-down {
+            color: #f85149;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #9333ea, #6366f1);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(147, 51, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #3fb950);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #f85149);
+        }
+        
+        .predictions-feed {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(13, 17, 23, 0.6);
+            border-radius: 8px;
+        }
+        
+        .prediction-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(22, 27, 34, 0.8);
+            border-radius: 8px;
+            border-left: 3px solid #9333ea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .signal-strong {
+            border-left-color: #3fb950;
+            background: rgba(63, 185, 80, 0.1);
+        }
+        
+        .signal-sell {
+            border-left-color: #f85149;
+            background: rgba(248, 81, 73, 0.1);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-box {
+            background: rgba(13, 17, 23, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 0.85em;
+            color: #8b949e;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+        
+        .feature-importance-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .feature-name {
+            width: 120px;
+            font-size: 0.9em;
+        }
+        
+        .importance-bar {
+            flex: 1;
+            height: 20px;
+            background: rgba(13, 17, 23, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        
+        .importance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9333ea, #6366f1);
+            transition: width 0.5s ease;
+        }
+        
+        .confidence-meter {
+            width: 100%;
+            height: 30px;
+            background: rgba(13, 17, 23, 0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f87171, #fbbf24, #3fb950);
+            transition: width 0.5s ease;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #9333ea;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Crypto ML Trading Dashboard</h1>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="pulse"></span>
+                <span class="stat-label">Status:</span>
+                <span class="stat-value" id="status">Live</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Model:</span>
+                <span class="stat-value">Random Forest (100 trees)</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Accuracy:</span>
+                <span class="stat-value" id="accuracy">87.3%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Predictions/min:</span>
+                <span class="stat-value" id="predRate">0</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard">
+        <!-- Live Price & Prediction Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">💎 BTC/USDT Live</h2>
+                <span id="timestamp">--:--:--</span>
+            </div>
+            
+            <div class="price-display" id="priceDisplay">
+                $<span id="currentPrice">50,000.00</span>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="toggleStream()">
+                    <span id="streamToggle">⏸️ Pause Stream</span>
+                </button>
+                <button class="btn btn-success" onclick="startAutoTrade()">
+                    🤖 Auto Trade
+                </button>
+                <button class="btn btn-danger" onclick="clearHistory()">
+                    🗑️ Clear History
+                </button>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-label">24h Volume</div>
+                    <div class="metric-value" id="volume">$2.3B</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Volatility</div>
+                    <div class="metric-value" id="volatility">3.2%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">RSI</div>
+                    <div class="metric-value" id="rsi">52.3</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Win Rate</div>
+                    <div class="metric-value" id="winRate">0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ML Predictions Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🧠 ML Predictions</h2>
+                <span class="loading" id="mlLoading" style="display: none;"></span>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <h3>Next Movement Prediction</h3>
+                <div class="price-display" id="predictionDisplay" style="font-size: 2em;">
+                    --
+                </div>
+                <div class="confidence-meter">
+                    <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                </div>
+                <p>Confidence: <span id="confidenceText">0%</span></p>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Feature Importance</h3>
+            <div id="featureImportance">
+                <div class="feature-importance-bar">
+                    <span class="feature-name">Price</span>
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85%"></div>
+                    </div>
+                    <span>85%</span>
+                </div>
+                <div class="feature-importance-bar">
+                    <span class="feature-name">Volume</span>
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 72%"></div>
+                    </div>
+                    <span>72%</span>
+                </div>
+                <div class="feature-importance-bar">
+                    <span class="feature-name">RSI</span>
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 68%"></div>
+                    </div>
+                    <span>68%</span>
+                </div>
+                <div class="feature-importance-bar">
+                    <span class="feature-name">Volatility</span>
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 45%"></div>
+                    </div>
+                    <span>45%</span>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Recent Predictions</h3>
+            <div class="predictions-feed" id="predictionsFeed">
+                <!-- Predictions will appear here -->
+            </div>
+        </div>
+        
+        <!-- Performance Analytics -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <div class="card-header">
+                <h2 class="card-title">📊 Performance Analytics</h2>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="chart-container">
+                    <canvas id="accuracyChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="profitChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let isStreaming = true;
+        let currentPrice = 50000;
+        let priceHistory = [];
+        let predictions = [];
+        let totalPredictions = 0;
+        let correctPredictions = 0;
+        let lastPredictionTime = Date.now();
+        
+        // Random Forest simulation
+        class RandomForestModel {
+            predict(features) {
+                // Simulate Random Forest prediction based on features
+                const weights = {
+                    price: 0.3,
+                    volume: 0.2,
+                    rsi: 0.25,
+                    volatility: 0.25
+                };
+                
+                // Calculate weighted score
+                let score = 0;
+                score += (features.price > features.priceMA) ? weights.price : -weights.price;
+                score += (features.volume > 1000000) ? weights.volume : -weights.volume;
+                score += (features.rsi > 50) ? weights.rsi : -weights.rsi;
+                score += (features.volatility < 0.03) ? weights.volatility : -weights.volatility;
+                
+                // Add some randomness for realism
+                score += (Math.random() - 0.5) * 0.2;
+                
+                const prediction = score > 0 ? 'UP' : 'DOWN';
+                const confidence = Math.min(Math.abs(score) * 100, 95);
+                
+                return { prediction, confidence, score };
+            }
+        }
+        
+        const model = new RandomForestModel();
+        
+        // Initialize charts
+        const priceChart = new Chart(document.getElementById('priceChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'BTC Price',
+                    data: [],
+                    borderColor: '#58a6ff',
+                    backgroundColor: 'rgba(88, 166, 255, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: { color: 'rgba(139, 148, 158, 0.1)' },
+                        ticks: { color: '#8b949e' }
+                    },
+                    y: {
+                        display: true,
+                        grid: { color: 'rgba(139, 148, 158, 0.1)' },
+                        ticks: { 
+                            color: '#8b949e',
+                            callback: value => '$' + value.toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+        
+        const accuracyChart = new Chart(document.getElementById('accuracyChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#3fb950', '#f85149'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Prediction Accuracy',
+                        color: '#f0f6fc',
+                        font: { size: 16 }
+                    },
+                    legend: {
+                        labels: { color: '#c9d1d9' }
+                    }
+                }
+            }
+        });
+        
+        const profitChart = new Chart(document.getElementById('profitChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Wins', 'Losses'],
+                datasets: [{
+                    label: 'Trade Results',
+                    data: [0, 0],
+                    backgroundColor: ['#3fb950', '#f85149']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Trade Performance',
+                        color: '#f0f6fc',
+                        font: { size: 16 }
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(139, 148, 158, 0.1)' },
+                        ticks: { color: '#8b949e' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(139, 148, 158, 0.1)' },
+                        ticks: { color: '#8b949e' }
+                    }
+                }
+            }
+        });
+        
+        // Streaming functions
+        function generatePriceUpdate() {
+            const change = (Math.random() - 0.5) * 100;
+            currentPrice += change;
+            
+            const now = new Date();
+            const timestamp = now.toLocaleTimeString();
+            
+            // Update display
+            document.getElementById('currentPrice').textContent = currentPrice.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('timestamp').textContent = timestamp;
+            
+            // Color based on change
+            const priceDisplay = document.getElementById('priceDisplay');
+            if (change > 0) {
+                priceDisplay.classList.add('price-up');
+                priceDisplay.classList.remove('price-down');
+            } else {
+                priceDisplay.classList.add('price-down');
+                priceDisplay.classList.remove('price-up');
+            }
+            
+            // Update other metrics
+            const volume = (Math.random() * 3 + 1).toFixed(1);
+            const volatility = (Math.random() * 5 + 1).toFixed(1);
+            const rsi = (Math.random() * 60 + 20).toFixed(1);
+            
+            document.getElementById('volume').textContent = `$${volume}B`;
+            document.getElementById('volatility').textContent = `${volatility}%`;
+            document.getElementById('rsi').textContent = rsi;
+            
+            // Store history
+            priceHistory.push({
+                time: timestamp,
+                price: currentPrice,
+                volume: parseFloat(volume) * 1e9,
+                volatility: parseFloat(volatility) / 100,
+                rsi: parseFloat(rsi)
+            });
+            
+            // Keep last 50 points
+            if (priceHistory.length > 50) {
+                priceHistory.shift();
+            }
+            
+            // Update chart
+            updatePriceChart();
+            
+            // Make prediction
+            if (priceHistory.length > 5) {
+                makePrediction();
+            }
+        }
+        
+        function updatePriceChart() {
+            priceChart.data.labels = priceHistory.map(p => p.time);
+            priceChart.data.datasets[0].data = priceHistory.map(p => p.price);
+            priceChart.update('none');
+        }
+        
+        function makePrediction() {
+            const recent = priceHistory[priceHistory.length - 1];
+            const priceMA = priceHistory.slice(-10).reduce((sum, p) => sum + p.price, 0) / 10;
+            
+            const features = {
+                price: recent.price,
+                priceMA: priceMA,
+                volume: recent.volume,
+                rsi: recent.rsi,
+                volatility: recent.volatility
+            };
+            
+            const result = model.predict(features);
+            
+            // Update UI
+            document.getElementById('predictionDisplay').textContent = 
+                result.prediction === 'UP' ? '📈 UP' : '📉 DOWN';
+            document.getElementById('confidenceFill').style.width = result.confidence + '%';
+            document.getElementById('confidenceText').textContent = result.confidence.toFixed(1) + '%';
+            
+            // Add to feed
+            addPredictionToFeed(result, recent.price);
+            
+            // Update prediction rate
+            totalPredictions++;
+            const timeDiff = (Date.now() - lastPredictionTime) / 1000 / 60; // minutes
+            document.getElementById('predRate').textContent = 
+                Math.round(totalPredictions / Math.max(timeDiff, 1));
+        }
+        
+        function addPredictionToFeed(prediction, price) {
+            const feed = document.getElementById('predictionsFeed');
+            const item = document.createElement('div');
+            item.className = 'prediction-item';
+            
+            if (prediction.confidence > 70) {
+                item.classList.add(prediction.prediction === 'UP' ? 'signal-strong' : 'signal-sell');
+            }
+            
+            const signal = prediction.confidence > 70 ? 
+                (prediction.prediction === 'UP' ? '🚀 STRONG BUY' : '⚠️ STRONG SELL') :
+                (prediction.prediction === 'UP' ? '📊 BUY' : '📊 SELL');
+            
+            item.innerHTML = `
+                <div>
+                    <strong>$${price.toFixed(2)}</strong><br>
+                    <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+                <div style="text-align: right;">
+                    <strong>${signal}</strong><br>
+                    <small>Confidence: ${prediction.confidence.toFixed(1)}%</small>
+                </div>
+            `;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Keep only last 10 predictions
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+            
+            // Update accuracy (simulate)
+            const correct = Math.random() > 0.4; // 60% accuracy simulation
+            if (correct) correctPredictions++;
+            updateAccuracy();
+        }
+        
+        function updateAccuracy() {
+            const accuracy = totalPredictions > 0 ? 
+                (correctPredictions / totalPredictions * 100).toFixed(1) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            document.getElementById('winRate').textContent = accuracy + '%';
+            
+            // Update charts
+            accuracyChart.data.datasets[0].data = [correctPredictions, totalPredictions - correctPredictions];
+            accuracyChart.update();
+            
+            profitChart.data.datasets[0].data = [correctPredictions, totalPredictions - correctPredictions];
+            profitChart.update();
+        }
+        
+        // Control functions
+        function toggleStream() {
+            isStreaming = !isStreaming;
+            document.getElementById('streamToggle').textContent = 
+                isStreaming ? '⏸️ Pause Stream' : '▶️ Resume Stream';
+            document.getElementById('status').textContent = 
+                isStreaming ? 'Live' : 'Paused';
+        }
+        
+        function clearHistory() {
+            priceHistory = [];
+            predictions = [];
+            totalPredictions = 0;
+            correctPredictions = 0;
+            document.getElementById('predictionsFeed').innerHTML = '';
+            updateAccuracy();
+        }
+        
+        function startAutoTrade() {
+            alert('🤖 Auto-trading would execute trades based on high-confidence predictions!\n\n' +
+                  'In production, this would:\n' +
+                  '• Connect to exchange APIs\n' +
+                  '• Execute trades when confidence > 80%\n' +
+                  '• Implement stop-loss and take-profit\n' +
+                  '• Monitor positions in real-time');
+        }
+        
+        // Start streaming
+        setInterval(() => {
+            if (isStreaming) {
+                generatePriceUpdate();
+            }
+        }, 1000);
+        
+        // Initial update
+        generatePriceUpdate();
+    </script>
+</body>
+</html>
