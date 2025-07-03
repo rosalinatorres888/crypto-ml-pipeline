@@ -238,20 +238,6 @@ Content-Type: application/json
 }
 ```
 
-## 📸 Screenshots
-
-<div align="center">
-<table>
-<tr>
-<td><img src="https://placeholder.com/dashboard1.png" width="400px"><br><b>Real-Time Dashboard</b></td>
-<td><img src="https://placeholder.com/dashboard2.png" width="400px"><br><b>ML Predictions</b></td>
-</tr>
-<tr>
-<td><img src="https://placeholder.com/dashboard3.png" width="400px"><br><b>Performance Analytics</b></td>
-<td><img src="https://placeholder.com/dashboard4.png" width="400px"><br><b>Feature Importance</b></td>
-</tr>
-</table>
-</div>
 
 ## 🗺️ Roadmap
 
@@ -300,9 +286,9 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 **Rosalina Torres** - [@rosalinatorres888](https://github.com/rosalinatorres888)
 
-- 💼 [LinkedIn](https://linkedin.com/in/rosalinatorres)
-- 📧 rosalinatorres888@gmail.com
-- 🌐 [Portfolio](https://rosalinatorres.dev)
+- 💼 [LinkedIn](https://linkedin.com/in/rosalina2)
+- 📧 torres.ros@northeastern.edu
+
 
 ## 📄 License
 
