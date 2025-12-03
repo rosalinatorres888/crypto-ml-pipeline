@@ -1,0 +1,37 @@
+# Exchange API Configuration
+exchanges:
+  binance:
+    api_key: "YOUR_API_KEY"
+    api_secret: "YOUR_API_SECRET"
+  coinbase:
+    api_key: "YOUR_API_KEY"
+    api_secret: "YOUR_API_SECRET"
+
+# Database Configuration
+database:
+  host: "localhost"
+  port: 5432
+  name: "crypto_ml"
+  user: "postgres"
+  password: "YOUR_PASSWORD"
+
+# Model Configuration
+model:
+  retrain_interval: 7  # days
+  prediction_threshold: 0.75
+  ensemble_weights:
+    random_forest: 0.6
+    lstm: 0.4
+
+# Airflow Configuration
+airflow:
+  dags_folder: "./dags"
+  executor: "CeleryExecutor"
+
+# Trading Configuration
+trading:
+  symbols:
+    - "BTC-USD"
+    - "ETH-USD"
+  interval: "1h"
+  max_positions: 3
