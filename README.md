@@ -86,6 +86,34 @@ Production-ready machine learning system that processes real-time cryptocurrency
 
 ---
 
+## 🏛️ Object-Oriented Design (UML Class Diagram)
+
+**Production-grade software architecture with separation of concerns:**
+
+![UML Class Diagram](images/crypto-ml-uml.png)
+
+This class diagram demonstrates:
+- **AirflowDAG:** Orchestrates the entire pipeline with scheduled ingestion, training, and triggering
+- **DataIngestion:** WebSocket management, validation, normalization, and streaming
+- **FeatureEngineering:** Calculates 20+ technical indicators (RSI, MACD, Bollinger Bands, momentum, volatility)
+- **EnsembleModel:** Implements abstract MLModel interface with soft voting across Random Forest and LSTM
+- **DatabaseManager:** Handles connection pooling, prediction storage, and historical data retrieval
+- **Dashboard:** Renders real-time charts and updates with live predictions
+
+**Design Patterns Used:**
+- Strategy Pattern (MLModel interface with multiple implementations)
+- Factory Pattern (Model instantiation)
+- Observer Pattern (Real-time dashboard updates)
+- Singleton Pattern (DatabaseManager connection pooling)
+
+**Key Architecture Decisions:**
+- Interface-based design enables easy model swapping
+- Airflow orchestration separates concerns (ingestion, training, inference)
+- Database abstraction layer supports multiple backends
+- Clean separation between data pipeline, ML logic, and presentation
+
+---
+
 ## 📊 Model Performance
 
 ### Classification Metrics
