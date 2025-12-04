@@ -298,7 +298,7 @@ Integration of order flow microstructure data with traditional price-based featu
 MS Data Analytics Engineering @ Northeastern University
 
 - 📧 Email: torres.ros@northeastern.edu
-- 💼 LinkedIn: [linkedin.com/in/rosalinatorres](https://linkedin.com/in/rosalinatorres)
+- 💼 LinkedIn: [linkedin.com/in/rosalinatorres](https://linkedin.com/in/rosalina-torres)
 - 🌐 Portfolio: [rosalinatorres888.github.io](https://rosalinatorres888.github.io)
 
 Part of my ML/AI engineering portfolio demonstrating end-to-end MLOps capabilities.
