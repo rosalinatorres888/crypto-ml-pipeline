@@ -1,3 +1,11 @@
+
+<p align="center">
+  <img src="images/crypto-ml-pipeline-banner.svg" alt="Project Banner" width="100%">
+</p>
+
+
+
+
 ![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange?style=flat-square)
